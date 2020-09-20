@@ -1,0 +1,63 @@
+---
+title: "Economia Naranja"
+author: "Rusbel Bermudez"
+date: "September 17, 2020"
+output: html_document
+---
+
+
+```{r}
+orangeec <-read.csv("/Users/rb/Desktop/Curso R/orangeec.csv")
+data(orangeec)
+summary(orangeec)
+```
+
+Parece que hay relacion entre el aporte de economia naranja al pib y la tasa de desempleo
+
+```{r}
+pairs(orangeec[,6:10])
+```
+
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+ggplot()+geom_histogram(data=orangeec,aes(x=orangeec$Internet.penetration...population),
+    fill="lightblue",color="darkblue",binwidth=5)+
+labs(x="Penetración de Internet (%) población", y="Cantidad de Paises", 
+    title="Penetración de Internet en LATAM")+
+scale_x_continuous(breaks=seq(38, max(96), 2))+
+theme(legend.position="none")+
+theme(panel.background=element_blank(), 
+    panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+
+```
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+mean <- mean(orangeec$GDP.PC)
+```
+
+
+```{r}
+orangeec <- orangeec %>% 
+    mutate(strongEconomy = ifelse(GDP.PC < mean, 
+    "Por debajo del promedio PIB", "Por encima del promedio PIB"))
+```
+
+
+```{r}
+ggplot(orangeec, aes(x=strongEconomy, y=Creat.Ind...GDP, fill=strongEconomy))+
+geom_boxplot(alpha=0.4)+
+labs(x="Tipo de País", y="Aporte Economía Naranja al PIB", 
+    title="Aporte Economía Naranja en PIB en LATAM con alto y bajo PIB per cápita")
+```
+
+El boxplot indica que los paises por encima del promedio del PIB tienen una dispersión mucho mas alta en relación a los aportes de la economía naranja al PIB del país. CUIDADO, contrastar con desviación estándar.
+
+
